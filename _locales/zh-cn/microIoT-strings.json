@@ -30,5 +30,7 @@
     "microIoT.microIoT_ledRange|block": "灯号 从|%from 到|%to",
     "microIoT.microIoT_rgb|block": "红|%r 绿|%g 蓝|%b",
     "microIoT.microIoT_ledBlank|block": "RGB灯全部熄灭",
-    "microIoT.microIoT_setBrightness|block":"设置亮度|%brightness"
+    "microIoT.microIoT_setBrightness|block":"设置亮度|%brightness",
+    "microIoT.token|block": "BeeBotte 配置密钥: %token",
+    "microIoT.sendmessage|block": "BeeBotte 频道: %channel 资源: %resource 发送数据 %data"
 }

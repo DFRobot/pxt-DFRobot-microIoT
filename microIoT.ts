@@ -14,7 +14,7 @@
  */
 
 const OBLOQ_MQTT_EASY_IOT_SERVER_CHINA = "iot.dfrobot.com.cn"
-const OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL = "mqtt.beebotte.com"
+const OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL = "api.beebotte.com"
 const OBLOQ_MQTT_EASY_IOT_SERVER_EN = "iot.dfrobot.com"
 const microIoT_WEBHOOKS_URL = "maker.ifttt.com"
 const OBLOQ_MQTT_EASY_IOT_SERVER_TK = "api.thingspeak.com"
@@ -58,6 +58,7 @@ namespace microIoT {
 
     let microIoT_WEBHOOKS_KEY = ""
     let microIoT_WEBHOOKS_EVENT = ""
+    let microIoT_BEEBOTTE_Token = ""
 
     let READ_STATUS = 0x00
     let SET_PARA = 0x01
@@ -142,30 +143,24 @@ namespace microIoT {
         //% blockId="ALL" block="ALL"
         ALL = 2
     }
-
     export enum aServos {
         //% blockId="S1" block="S1"
         S1 = 0,
         //% blockId="S2" block="S2"
         S2 = 1
     }
-
     export enum Dir {
         //% blockId="CW" block="CW"
         CW = 0x0,
         //% blockId="CCW" block="CCW"
         CCW = 0x1
     }
-
     export enum SERVERS {
         //% blockId=SERVERS_China block="EasyIOT_CN"
         China,
         //% blockId=SERVERS_English block="EasyIOT_EN"
         English,
-        //% blockId=SERVERS_Global block="Beebotte"
-        Global
     }
-
     export enum TOPIC {
         topic_0 = 0,
         topic_1 = 1,
@@ -177,11 +172,9 @@ namespace microIoT {
     export class PacketMqtt {
         public message: string;
     }
-
     /**
      * Configure the micro:IoT servo.
      */
-
     //% weight=50
     //% blockId=microIoT_ServoRun block="Servo|%index|angle|%angle"
     //% angle.min=0 angle.max=180
@@ -197,11 +190,9 @@ namespace microIoT {
         buf[1] = angle;
         pins.i2cWriteBuffer(0x16, buf);
     }
-
     /**
      * Configure the direction and speed of the micro:IoT motor 
      */
-
     //% weight=49
     //% blockId=microIoT_MotorRun block="Motor|%index|move|%Dir|at speed|%speed"
     //% speed.min=0 speed.max=255
@@ -235,11 +226,9 @@ namespace microIoT {
         buf[2] = speed;
         pins.i2cWriteBuffer(IIC_ADDRESS, buf);
     }
-
     /**
      * Stop the motor
      */
-
     //% weight=48
     //% blockId=microIoT_motorStop block="Motor |%motors stop"
     //% motors.fieldEditor="gridpicker" motors.fieldOptions.columns=2 
@@ -325,13 +314,11 @@ namespace microIoT {
             basic.pause(50);
         }
     }
-
     /**
     * WiFi configuration
     * @param SSID to SSID ,eg: "yourSSID"
     * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
     */
-
     //% weight=100
     //% blockId=microIoT_wifi block="Micro:IoT setup |Wi-Fi: |name: %SSID| password：%PASSWORD"
     export function microIoT_WIFI(SSID: string, PASSWORD: string): void {
@@ -341,7 +328,6 @@ namespace microIoT {
         microIoT_CheckStatus("WiFiConnected");
         Wifi_Status = WIFI_CONNECTED
     }
-
     /**
      * MQTT configuration
      * @param SSID to SSID ,eg: "yourSSID"
@@ -350,7 +336,6 @@ namespace microIoT {
      * @param IOT_PWD to IOT_PWD ,eg: "yourIotPwd"
      * @param IOT_TOPIC to IOT_TOPIC ,eg: "yourIotTopic"
     */
-
     //% weight=100
     //% blockExternalInputs=1
     //% blockId=microIoT_MQTT block="Micro:IoT setup mqtt|IOT_ID(user): %IOT_ID| IOT_PWD(password) :%IOT_PWD|(default topic_0) Topic: %IOT_TOPIC| server: %SERVERS"
@@ -362,7 +347,7 @@ namespace microIoT {
             microIoT_setPara(SETMQTT_SERVER, OBLOQ_MQTT_EASY_IOT_SERVER_CHINA)
         } else if (servers == SERVERS.English) {
             microIoT_setPara(SETMQTT_SERVER, OBLOQ_MQTT_EASY_IOT_SERVER_EN)
-        } else { microIoT_setPara(SETMQTT_SERVER, OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL) }
+        } //else { microIoT_setPara(SETMQTT_SERVER, OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL) }
         microIoT_setPara(SETMQTT_PORT, "1883")
         microIoT_setPara(SETMQTT_ID, IOT_ID)
         microIoT_setPara(SETMQTT_PASSWORLD, IOT_PWD)
@@ -377,11 +362,9 @@ namespace microIoT {
         serial.writeString("sub topic ok\r\n");
 
     }
-
     /**
      * Add an MQTT subscription
      */
-
     //% weight=200
     //% blockId=microIoT_add_topic
     //% block="subscribe additional %top |: %IOT_TOPIC"
@@ -392,12 +375,10 @@ namespace microIoT {
         microIoT_CheckStatus("SubTopicOK");
 
     }
-
     /**
      * MQTT sends information to the corresponding subscription
      * @param Mess to Mess ,eg: "mess"
      */
-
     //% weight=99
     //% blockId=microIoT_SendMessage block="MQTT Send Message %string| to |%TOPIC"
     export function microIoT_SendMessage(Mess: string, Topic: TOPIC): void {
@@ -462,8 +443,6 @@ namespace microIoT {
             cb(packet.message)
         });
     }
-
-
     /**
     * IFTTT configuration
     * @param EVENT to EVENT ,eg: "yourEvent"
@@ -478,8 +457,6 @@ namespace microIoT {
         microIoT_WEBHOOKS_EVENT = EVENT
         microIoT_WEBHOOKS_KEY = KEY
     }
-
-
     function microIoT_http_wait_request(time: number): string {
         if (time < 100) {
             time = 100
@@ -501,12 +478,10 @@ namespace microIoT {
             }
         }
     }
-
     /**
     * ThingSpeak configured and sent data
     * @param KEY to KEY ,eg: "your write api key"
     */
-
     //% weight=99
     //% blockId=IFTTT_MQTT_Weather_ThingSpeak_Get
     //% block="ThingSpeak(Get) | key %KEY|value1 %field1| value2 %field2| value3 %field3|  value4 %field4| value5 %field5| value6 %field6| value7 %field7| timeout(ms) %time"
@@ -516,13 +491,11 @@ namespace microIoT {
         tempStr = "update?api_key=" + KEY + "&field1=" + field1 + "&field2=" + field2 + "&field3=" + field3 + "&field4=" + field4 + "&field5=" + field5 + "&field6=" + field6 + "&field7=" + field7 + "\r"
         microIoT_ParaRunCommand(GET_URL, tempStr);
     }
-
     /**
      * IFTTT send data
      * time(ms): private long maxWait
      * @param time set timeout, eg: 10000
     */
-
     //% weight=78
     //% blockId=microIoT_http_post
     //% block="IFTTT(post) | value1 %value1| value2 %value2| value3 %value3| timeout(ms) %time"
@@ -532,7 +505,27 @@ namespace microIoT {
         tempStr = "trigger/" + microIoT_WEBHOOKS_EVENT + "/with/key/" + microIoT_WEBHOOKS_KEY + ",{\"value1\":\"" + value1 + "\",\"value2\":\"" + value2 + "\",\"value3\":\"" + value3 + "\" }" + "\r"
         microIoT_ParaRunCommand(POST_URL, tempStr)
     }
-
+    /**Beebotte Configure 
+     * @param token ,eg: "Your Channel Token"
+     */
+    //%weight=30
+    //%blockID=WiFi_IoT_I2C_BeeBotte_Configura block="BeeBotte configura key: %token "
+    export function token(token:string):void{
+        microIoT_BEEBOTTE_Token = token;
+    }
+    /**BeeBotte send data
+     * @param channel ,eg: "Your Channel Name"
+     * @param resource ,eg: "Your Resource Name"
+     * @param data ,eg: "Send Message"
+     */
+     //%weight=29
+    //%blockID=WiFi_IoT_I2C_BeeBotte_sendmessage block="BeeBotte Channel: %channel Resource: %resource send value %data "
+    export function sendmessage(channel:string, resource:string, data:string){
+        microIoT_setPara(SETHTTP_IP, OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL)
+        let tempStr = ""
+        tempStr = "v1/data/write/" + channel + "/" + resource + "?token=" + microIoT_BEEBOTTE_Token +",{\"data\":" + data + "}\r\n";
+        microIoT_ParaRunCommand(POST_URL, tempStr);
+    }
 
 
     /**
