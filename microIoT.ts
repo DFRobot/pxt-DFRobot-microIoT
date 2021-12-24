@@ -322,6 +322,17 @@ namespace microIoT {
     //% weight=100
     //% blockId=microIoT_wifi block="Micro:IoT setup |Wi-Fi: |name: %SSID| password：%PASSWORD"
     export function microIoT_WIFI(SSID: string, PASSWORD: string): void {
+        let Version = microIoT.microIoT_get_version();
+        
+        if (Version == "V4.0") {
+            serial.writeLine(Version)
+            let buf = pins.createBuffer(3);
+            buf[0] = 0x1E;
+            buf[1] = 0x02;
+            buf[2] = 0x17;
+            pins.i2cWriteBuffer(IIC_ADDRESS, buf);
+            basic.pause(2000)
+        }
         microIoT_setPara(SETWIFI_NAME, SSID)
         microIoT_setPara(SETWIFI_PASSWORLD, PASSWORD)
         microIoT_runCommand(CONNECT_WIFI)
