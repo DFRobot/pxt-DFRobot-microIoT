@@ -24,7 +24,7 @@
     "microIoT.microIoT_showUserText|block": "OLED 显示屏 第%line行|显示文本%text",
     "microIoT.microIoT_clear|block": "OLED清屏",
     "microIoT.microIoT_drawUserLine|block": "OLED画线起点 x1:%x1|y1:%y1| 终点x2:%x2|y2:%y2",
-    "microIoT.microIoT_initDisplay|block": "初始化OLED显示屏",
+    "microIoT.microIoT_initDisplay|block": "初始化设备",
     "microIoT.microIoT_showColor|block": "显示颜色 |%rgb",
     "microIoT.microIoT_setIndexColor|block": "设置 灯号 |%index 颜色|%rgb",
     "microIoT.microIoT_ledRange|block": "灯号 从|%from 到|%to",
