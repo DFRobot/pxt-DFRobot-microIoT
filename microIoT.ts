@@ -731,7 +731,6 @@ namespace microIoT {
     export function microIoT_initDisplay(): void {
         let Version = microIoT.microIoT_get_version();
         if (Version == "V4.0") {
-            serial.writeLine(Version)
             let buf = pins.createBuffer(3);
             buf[0] = 0x1E;
             buf[1] = 0x02;
