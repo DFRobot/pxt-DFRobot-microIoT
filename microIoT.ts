@@ -555,27 +555,27 @@ namespace microIoT {
         tempStr = "trigger/" + microIoT_WEBHOOKS_EVENT + "/with/key/" + microIoT_WEBHOOKS_KEY + ",{\"value1\":\"" + value1 + "\",\"value2\":\"" + value2 + "\",\"value3\":\"" + value3 + "\" }" + "\r"
         microIoT_ParaRunCommand(POST_URL, tempStr)
     }
-    /**Beebotte Configure 
-     * @param token ,eg: "Your Channel Token"
-     */
-    //%weight=30
-    //%blockID=WiFi_IoT_I2C_BeeBotte_Configura block="BeeBotte configura key: %token "
-    export function token(token:string):void{
-        microIoT_BEEBOTTE_Token = token;
-    }
-    /**BeeBotte send data
-     * @param channel ,eg: "Your Channel Name"
-     * @param resource ,eg: "Your Resource Name"
-     * @param data ,eg: "Send Message"
-     */
-     //%weight=29
-    //%blockID=WiFi_IoT_I2C_BeeBotte_sendmessage block="BeeBotte Channel: %channel Resource: %resource send value %data "
-    export function sendmessage(channel:string, resource:string, data:string){
-        microIoT_setPara(SETHTTP_IP, OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL)
-        let tempStr = ""
-        tempStr = "v1/data/write/" + channel + "/" + resource + "?token=" + microIoT_BEEBOTTE_Token +",{\"data\":" + data + "}\r\n";
-        microIoT_ParaRunCommand(POST_URL, tempStr);
-    }
+    // /**Beebotte Configure 
+    //  * @param token ,eg: "Your Channel Token"
+    //  */
+    // //%weight=30
+    // //%blockID=WiFi_IoT_I2C_BeeBotte_Configura block="BeeBotte configura key: %token "
+    // export function token(token:string):void{
+    //     microIoT_BEEBOTTE_Token = token;
+    // }
+    // /**BeeBotte send data
+    //  * @param channel ,eg: "Your Channel Name"
+    //  * @param resource ,eg: "Your Resource Name"
+    //  * @param data ,eg: "Send Message"
+    //  */
+    //  //%weight=29
+    // //%blockID=WiFi_IoT_I2C_BeeBotte_sendmessage block="BeeBotte Channel: %channel Resource: %resource send value %data "
+    // export function sendmessage(channel:string, resource:string, data:string){
+    //     microIoT_setPara(SETHTTP_IP, OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL)
+    //     let tempStr = ""
+    //     tempStr = "v1/data/write/" + channel + "/" + resource + "?token=" + microIoT_BEEBOTTE_Token +",{\"data\":" + data + "}\r\n";
+    //     microIoT_ParaRunCommand(POST_URL, tempStr);
+    // }
 
 
     /**
