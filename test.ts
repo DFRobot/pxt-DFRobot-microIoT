@@ -12,17 +12,7 @@ input.onButtonPressed(Button.AB, function () {
     )
 })
 input.onButtonPressed(Button.B, function () {
-    microIoT.microIoT_http_TK_GET(
-        "your write api key",
-        "DFRObot",
-        "2019",
-        "12",
-        "31",
-        "",
-        "",
-        "",
-        0
-    )
+    
 })
 microIoT.microIoT_initDisplay()
 microIoT.microIoT_WIFI("yourSSID", "yourPASSWORD")

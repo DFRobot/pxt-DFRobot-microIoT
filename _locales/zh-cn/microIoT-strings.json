@@ -20,6 +20,8 @@
     "microIoT.microIoT_get_heartbeat|block": "心跳请求",
     "microIoT.microIoT_stop_heartbeat|block": "停止心跳请求",
     "microIoT.microIoT_wifi_ipconfig|block": "获取IP地址",
+    "microIoT.ThingSpeakSend|block": "ThingSpeak 发送 Field1:%field1||Field2:%field2|Field3:%field3|Field14:%field4|Field5:%field5|Field6:%field6|Field7:%field7 Field8:%field8",
+    "microIoT.ThingSpeakConfigure|block": "ThingSpeak 配置 密钥: %KEY",
     "microIoT.microIoT_showUserNumber|block": "OLED 显示屏 第%line行|显示数字%n",
     "microIoT.microIoT_showUserText|block": "OLED 显示屏 第%line行|显示文本%text",
     "microIoT.microIoT_clear|block": "OLED清屏",
