@@ -308,12 +308,18 @@ namespace microIoT {
 
     }
     function microIoT_CheckStatus(cmd: string): void {
+        let startTime = input.runningTime();
+        let currentTime = 0;
         while (true) {
+            currentTime = input.runningTime();
             if (microIoTStatus == cmd) {
                 serial.writeString("OKOK\r\n");
                 return;
             }
             basic.pause(50);
+            if ((currentTime - startTime) > 1000){
+                return
+            }
         }
     }
     /**
