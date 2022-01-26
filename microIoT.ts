@@ -43,11 +43,35 @@ enum NeoPixelColors {
     Black = 0x000000
 }
 
+enum PIN {
+    P15,
+    P0,
+    P1,
+    P2,
+    P8,
+    P12,
+    P16
+};
+
 /**
  *Obloq implementation method.
  */
 //% weight=10 color=#008B00 icon="\uf1eb" block="microIoT"
 namespace microIoT {
+    let BrightnessP15=255;
+    let BrightnessP1 = 255;
+    let BrightnessP0 = 255;
+    let BrightnessP2 = 255;
+    let BrightnessP8 = 255;
+    let BrightnessP12 = 255;
+    let BrightnessP16 = 255;
+    let LenP15 = 4;
+    let LenP1 = 4;
+    let LenP0 = 4;
+    let LenP2 = 4;
+    let LenP8 = 4;
+    let LenP12 = 4;
+    let LenP16 = 4;
     let IIC_ADDRESS = 0x16
     let Topic0CallBack: Action = null;
     let Topic1CallBack: Action = null;
@@ -1011,104 +1035,176 @@ namespace microIoT {
         "\x00\x02\x01\x01\x02\x01\x00\x00"  // "~"
     ];
 
-
-
-    let _brightness = 255
-    let neopixel_buf = pins.createBuffer(16 * 3);
-    for (let i = 0; i < 16 * 3; i++) {
-        neopixel_buf[i] = 0
-    }
-
-    /** 
+    /**
      * Set the three primary color:red, green, and blue
+     * @param r , eg: 255
+     * @param g  , eg: 255
+     * @param b  , eg: 255
      */
     //% weight=60
     //% r.min=0 r.max=255
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
-    //%  block="red|%r green|%g blue|%b"
+    //%  block="red %r green %g blue %b"
     export function microIoT_rgb(r: number, g: number, b: number): number {
         return (r << 16) + (g << 8) + (b);
     }
 
     /**
-     * RGB LEDs light up from A to B 
+     * Setting the Number of lights
+     * @param len , eg: 7
      */
     //% weight=60
-    //% from.min=0 from.max3
-    //% to.min=0 to.max=3
-    //% to.defl=3
-    //%  block="RGB LEDs |%from to|%to"
-    export function microIoT_ledRange(from: number, to: number): number {
-        return (from << 16) + (2 << 8) + (to);
+    //%  block="pin %pin %len RGB LEDs"
+    export function microIoT_length(pin:PIN, len:number):void{
+        switch (pin) {
+            case PIN.P0:
+                LenP0 = len
+                break;
+            case PIN.P1:
+                LenP1 = len
+                break;
+            case PIN.P2:
+                LenP2 = len
+                break;
+            case PIN.P8:
+                LenP8 = len
+                break;
+            case PIN.P12:
+                LenP12 = len
+                break;
+            case PIN.P15:
+                LenP15 = len
+                break;
+            default:
+                LenP16 = len
+                break;
+        }
     }
+
     /**
      * Set the color of the specified LEDs
+     * @param start , eg: 0
+     * @param stop , eg: 4
      */
     //% weight=60
-    //% index.min=0 index.max=3
+    //% inlineInputMode=inline
     //% rgb.shadow="colorNumberPicker"
-    //%  block="RGB LED |%index show color|%rgb"
-    export function microIoT_setIndexColor(index: number, rgb: number) {
-        let f = index;
-        let t = index;
+    //%  block="pin %pin RGB %start to %stop show color %rgb"
+    export function microIoT_setIndexColor(pin: PIN, start: number, stop:number,rgb: number) {
+        let bufLength = 40 * 3;
+        let neopixel_buf = pins.createBuffer(bufLength);
+        for (let i = 0; i < bufLength; i++) {
+            neopixel_buf[i] = 0
+        }
+        let _pin;
+        let _brightness;
+        switch (pin) {
+            case PIN.P0:
+                _pin = DigitalPin.P0;
+                _brightness = BrightnessP0;
+                break;
+            case PIN.P1:
+                _pin = DigitalPin.P1;
+                _brightness = BrightnessP1;
+                break;
+            case PIN.P2:
+                _pin = DigitalPin.P2;
+                _brightness = BrightnessP2;
+                break;
+            case PIN.P8:
+                _pin = DigitalPin.P8;
+                _brightness = BrightnessP8;
+                break;
+            case PIN.P12:
+                _pin = DigitalPin.P12;
+                _brightness = BrightnessP12;
+                break;
+            case PIN.P15:
+                _pin = DigitalPin.P15;
+                _brightness = BrightnessP15;
+                break;
+            default:
+                _pin = DigitalPin.P16;
+                _brightness = BrightnessP16;
+                break;
+        }
+        let f = start;
+        let t = stop;
         let r = (rgb >> 16) * (_brightness / 255);
         let g = ((rgb >> 8) & 0xFF) * (_brightness / 255);
         let b = ((rgb) & 0xFF) * (_brightness / 255);
-
-        if (index > 15) {
-            if (((index >> 8) & 0xFF) == 0x02) {
-                f = index >> 16;
-                t = index & 0xff;
-            } else {
-                f = 0;
-                t = -1;
-            }
-        }
         for (let i = f; i <= t; i++) {
             neopixel_buf[i * 3 + 0] = Math.round(g)
             neopixel_buf[i * 3 + 1] = Math.round(r)
             neopixel_buf[i * 3 + 2] = Math.round(b)
         }
-        ws2812b.sendBuffer(neopixel_buf, DigitalPin.P15)
+        ws2812b.sendBuffer(neopixel_buf, _pin)
+    }
 
-    }
-    /**
-        * Set the color of all RGB LEDs
-        */
-    //% weight=60
-    //% rgb.shadow="colorNumberPicker"
-    //%  block="show color |%rgb"
-    export function microIoT_showColor(rgb: number) {
-        let r = (rgb >> 16) * (_brightness / 255);
-        let g = ((rgb >> 8) & 0xFF) * (_brightness / 255);
-        let b = ((rgb) & 0xFF) * (_brightness / 255);
-        for (let i = 0; i < 16 * 3; i++) {
-            if ((i % 3) == 0)
-                neopixel_buf[i] = Math.round(g)
-            if ((i % 3) == 1)
-                neopixel_buf[i] = Math.round(r)
-            if ((i % 3) == 2)
-                neopixel_buf[i] = Math.round(b)
-        }
-        ws2812b.sendBuffer(neopixel_buf, DigitalPin.P15)
-    }
     /**
      * Set the brightness of RGB LED
+     * @param brightness , eg: 100
      */
     //% weight=60
     //% brightness.min=0 brightness.max=255
-    //% block="set brightness to |%brightness"
-    export function microIoT_setBrightness(brightness: number) {
-        _brightness = brightness;
+    //% block="pin %pin LED brightness %brightness"
+    export function microIoT_setBrightness(pin: PIN,brightness: number) {
+        switch (pin) {
+            case PIN.P0:
+                BrightnessP0 = brightness;
+                break;
+            case PIN.P1:
+                BrightnessP1 = brightness;
+                break;
+            case PIN.P2:
+                BrightnessP2 = brightness;
+                break;
+            case PIN.P8:
+                BrightnessP8 = brightness;
+                break;
+            case PIN.P12:
+                BrightnessP12 = brightness;
+                break;
+            case PIN.P15:
+                BrightnessP15 = brightness;
+                break;
+            default:
+                BrightnessP16 = brightness;
+                break;
+        }
     }
     /**
      * Turn off all RGB LEDs
      */
     //% weight=60
-    //%  block="clear all LEDs"
-    export function microIoT_ledBlank() {
-        microIoT_showColor(0)
+    //%  block="pin %pin clear all LEDs"
+    export function microIoT_ledBlank(pin: PIN) {
+        let _len;
+        switch (pin) {
+            case PIN.P0:
+                _len = LenP0;
+                break;
+            case PIN.P1:
+                _len = LenP1 
+                break;
+            case PIN.P2:
+                _len = LenP2
+                break;
+            case PIN.P8:
+                _len = LenP8
+                break;
+            case PIN.P12:
+                _len = LenP12
+                break;
+            case PIN.P15:
+                _len = LenP15
+                break;
+            default:
+                _len = LenP16
+                break;
+        }
+        microIoT_setIndexColor(pin, 0, _len,0);
     }
 
 }

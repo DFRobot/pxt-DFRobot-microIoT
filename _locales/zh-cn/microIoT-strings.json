@@ -28,11 +28,11 @@
     "microIoT.microIoT_drawUserLine|block": "OLED画线起点 x1:%x1|y1:%y1| 终点x2:%x2|y2:%y2",
     "microIoT.microIoT_initDisplay|block": "初始化设备",
     "microIoT.microIoT_showColor|block": "显示颜色 |%rgb",
-    "microIoT.microIoT_setIndexColor|block": "设置 灯号 |%index 颜色|%rgb",
-    "microIoT.microIoT_ledRange|block": "灯号 从|%from 到|%to",
+    "microIoT.microIoT_setIndexColor|block": "RGB灯 引脚%pin 灯号 %start 到 %stop 显示颜色 %rgb",
+    "microIoT.microIoT_length|block": "初始化 RGB灯 引脚%pin 灯总数%len",
     "microIoT.microIoT_rgb|block": "红|%r 绿|%g 蓝|%b",
-    "microIoT.microIoT_ledBlank|block": "RGB灯全部熄灭",
-    "microIoT.microIoT_setBrightness|block":"设置亮度|%brightness",
+    "microIoT.microIoT_ledBlank|block": "RGB灯 引脚%pin 全部熄灭",
+    "microIoT.microIoT_setBrightness|block":"RGB灯 引脚%pin 灯带亮度为 %brightness",
     "microIoT.token|block": "BeeBotte 配置密钥: %token",
     "microIoT.sendmessage|block": "BeeBotte 频道: %channel 资源: %resource 发送数据 %data"
 }
