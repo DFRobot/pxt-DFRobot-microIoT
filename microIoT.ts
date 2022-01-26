@@ -1055,6 +1055,7 @@ namespace microIoT {
      * @param len , eg: 7
      */
     //% weight=60
+    //% len.min=0 len.max=40
     //%  block="pin %pin %len RGB LEDs"
     export function microIoT_length(pin:PIN, len:number):void{
         switch (pin) {
@@ -1089,6 +1090,8 @@ namespace microIoT {
      */
     //% weight=60
     //% inlineInputMode=inline
+    //% start.min=0 start.max=40
+    //% stop.min=0 stop.max=40
     //% rgb.shadow="colorNumberPicker"
     //%  block="pin %pin RGB %start to %stop show color %rgb"
     export function microIoT_setIndexColor(pin: PIN, start: number, stop:number,rgb: number) {
