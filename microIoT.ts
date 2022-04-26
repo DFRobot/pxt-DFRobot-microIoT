@@ -119,6 +119,10 @@ namespace microIoT {
     let POST_URL = 0x11
     let PUT_URL = 0x12
     let GET_VERSION = 0x13
+    let mqttState = 0
+    let wifiConnected = 0
+    let READmode = 0x00
+    let versionState = 0
 
 
     /*read para value*/
@@ -138,6 +142,7 @@ namespace microIoT {
     let WIFI_CONNECTED = 0x03
     let MQTT_CONNECTED = 0x01
     let MQTT_CONNECTERR = 0x02
+    let DISCONNECT_MQTT = 0x15
     let SUB_TOPIC_OK = 0x01
     let SUB_TOPIC_Ceiling = 0x02
 
@@ -341,9 +346,11 @@ namespace microIoT {
                 return;
             }
             basic.pause(50);
-            if ((currentTime - startTime) > 1000){
-                return
+            if (versionState == 1) {
+                if ((currentTime - startTime) > 20000)
+                    return;
             }
+
         }
     }
     /**
@@ -698,11 +705,12 @@ namespace microIoT {
     }
 
     function microIoT_InquireStatus(): void {
+
         let buf = pins.createBuffer(3)
         let tempId = 0
         let tempStatus = 0
         buf[0] = 0x1E
-        buf[1] = READ_STATUS
+        buf[1] = READmode
         buf[2] = 0x06
         pins.i2cWriteBuffer(IIC_ADDRESS, buf);
         let recbuf = pins.createBuffer(2)
@@ -721,17 +729,26 @@ namespace microIoT {
                 if (tempStatus == WIFI_CONNECTING) {
                     microIoTStatus = "WiFiConnecting"
                 } else if (tempStatus == WIFI_CONNECTED) {
-                    //microIoTStatus = "WiFiConnected"
+                    microIoTStatus = "WiFiConnected"
                 } else if (tempStatus == WIFI_DISCONNECT) {
                     microIoTStatus = "WiFiDisconnect"
+                    wifiConnected++;
+                    if (wifiConnected == 2) {
+                        wifiConnected = 0;
+                        microIoT_runCommand(WIFI_CONNECTED);
+                    }
                 } else {
-                }
-                break;
+                } break;
             case READ_MQTTSTATUS:
                 if (tempStatus == MQTT_CONNECTED) {
                     microIoTStatus = "MQTTConnected"
+                    mqttState = 1;
                 } else if (tempStatus == MQTT_CONNECTERR) {
                     microIoTStatus = "MQTTConnectERR"
+
+                } else if (tempStatus == 0) {//新版本修复重连
+                    microIoT_runCommand(DISCONNECT_MQTT);
+                    microIoT_runCommand(WIFI_CONNECTED);
                 }
                 break;
             case READ_SUBSTATUS:
@@ -747,7 +764,13 @@ namespace microIoT {
                 microIoTStatus = "READ_IP"
                 microIoT_GetData(tempStatus)
                 microIoT_IP = RECDATA
-                microIoTStatus = "WiFiConnected"
+                if (mqttState == 1) {
+                    mqttState = 0;
+                    microIoT_runCommand(DISCONNECT_MQTT);
+                    basic.pause(200)
+                    microIoT_runCommand(CONNECT_MQTT);
+                    //microIoT_CheckStatus("MQTTConnected");
+                }
                 break;
             case SUB_TOPIC0:
                 microIoTStatus = "READ_TOPICDATA"
@@ -837,6 +860,7 @@ namespace microIoT {
         microIoT_clear();
         let Version = microIoT.microIoT_get_version();
         if (Version == "V4.0") {
+            versionState = 1
             let buf = pins.createBuffer(3);
             buf[0] = 0x1E;
             buf[1] = 0x02;
