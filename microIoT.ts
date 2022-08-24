@@ -664,7 +664,7 @@ namespace microIoT {
         buf[1] = RUN_COMMAND;
         buf[2] = GET_VERSION;
         pins.i2cWriteBuffer(IIC_ADDRESS, buf);
-        microIoT_CheckStatus("READ_VERSION");
+        //microIoT_CheckStatus("READ_VERSION");
         return RECDATA
     }
 
