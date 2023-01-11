@@ -818,7 +818,7 @@ namespace microIoT {
             default:
                 break;
         }
-        basic.pause(200);
+        basic.pause(50);
     }
     basic.forever(function () {
         microIoT_InquireStatus();
