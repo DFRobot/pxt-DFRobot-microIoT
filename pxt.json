@@ -1,6 +1,6 @@
 {
     "name": "microIoT",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": "Add Wi-Fi connectivity to micro:bit and start your IoT project in 5 minutes!",
     "license": "MIT",
     "dependencies": {
