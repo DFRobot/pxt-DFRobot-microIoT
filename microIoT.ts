@@ -859,7 +859,7 @@ namespace microIoT {
         microIoT_cmd(0xAF);  // Set display On
         microIoT_clear();
         let Version = microIoT.microIoT_get_version();
-        if (Version == "V4.0") {
+        if (Version == "V4.1") {
             versionState = 1
             let buf = pins.createBuffer(3);
             buf[0] = 0x1E;
